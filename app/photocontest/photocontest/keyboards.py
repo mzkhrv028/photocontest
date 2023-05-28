@@ -1,8 +1,9 @@
 import typing as tp
 from dataclasses import asdict
 
-from app.photocontest.store.vkapi.models import Button, Keyboard
+from app.photocontest.store.vkapi.models import Button, Keyboard, UserAccount
 from app.photocontest.photocontest.messages import ButtonLabel, Payload
+
 
 if tp.TYPE_CHECKING:
     from app.photocontest.web.context import AppContext
@@ -35,6 +36,23 @@ class KeyboardDirector:
                 label=self.__label.menu(),
                 payload={"cmd": self.__payload.start()},
             ),
+        ]
+
+        self.__builder.add_buttons(buttons=buttons)
+
+        return asdict(self.__builder.keyboard)
+
+    def make_vote(self, *user_accounts: list[UserAccount]) -> dict[str, tp.Any]:
+        self.__builder.reset()
+        self.__builder.set_inline(True)
+        self.__builder.set_onetime(False)
+
+        buttons = [
+            Button(
+                type="callback",
+                label=user_account.first_name,
+                payload={"cmd": self.__payload.vote(), "vote_id": user_account.user_id},
+            ) for user_account in user_accounts
         ]
 
         self.__builder.add_buttons(buttons=buttons)

@@ -1,9 +1,10 @@
-import typing
+import typing as tp
 from dataclasses import dataclass
 
 from app.utils import parse
 
-if typing.TYPE_CHECKING:
+
+if tp.TYPE_CHECKING:
     from app.botpoll.web.app import Application
 
 

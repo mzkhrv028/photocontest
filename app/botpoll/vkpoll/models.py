@@ -1,4 +1,5 @@
 import json
+import typing as tp
 from dataclasses import dataclass, field
 
 
@@ -20,7 +21,8 @@ class Message:
     payload: str = "{}"
 
     def __post_init__(self):
-        self.payload = json.loads(self.payload).get("cmd", "")
+        payload = json.loads(self.payload)
+        self.payload = payload.get("cmd", "")
         self.text = self.text.lower()
 
 
@@ -32,18 +34,12 @@ class Event:
     payload: dict
     event_data: str = ""
     conversation_message_id: int | None = None
+    vote_id: int | None = field(init=False, default=None)
 
     def __post_init__(self):
-        self.payload = self.payload.get("cmd", "")
+        payload = self.payload
+        self.vote_id = payload.get("vote_id", None)
+        self.payload = payload.get("cmd", "")
 
 
-@dataclass
-class UpdateObject:
-    message: Message | None = None
-    event: Event | None = None
-
-
-@dataclass
-class Update:
-    type: str
-    object: UpdateObject
+UpdateObject = tp.TypeVar("UpdateObject", Message, Event)

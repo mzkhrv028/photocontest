@@ -1,16 +1,16 @@
-import typing
+import typing as tp
 
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
-    AsyncSession,
     create_async_engine,
     async_sessionmaker,
 )
-from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from sqlalchemy.orm import DeclarativeBase
 
 from app.photocontest.store.database.sqlalchemy_base import Base
 
-if typing.TYPE_CHECKING:
+
+if tp.TYPE_CHECKING:
     from app.photocontest.web.app import Application
 
 

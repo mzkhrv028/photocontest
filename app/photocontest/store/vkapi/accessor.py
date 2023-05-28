@@ -1,10 +1,11 @@
-import typing
+import typing as tp
 
 from aiohttp import ClientSession, TCPConnector
 
 from app.photocontest.store.vkapi.models import UserAccount
 
-if typing.TYPE_CHECKING:
+
+if tp.TYPE_CHECKING:
     from app.photocontest.web.app import Application
 
 
@@ -21,7 +22,7 @@ class VkAccessor:
         self.session = ClientSession(connector=TCPConnector(verify_ssl=False))
 
     async def disconnect(self) -> None:
-        if self.session:
+        if not self.session.closed:
             await self.session.close()
 
     async def get_user_account(self, user_id: int) -> UserAccount:

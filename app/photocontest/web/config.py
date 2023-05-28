@@ -22,7 +22,7 @@ class DatabaseConfig:
 
 @dataclass
 class GameConfig:
-    timeout_confirme: int
+    timeout: int
 
 
 @dataclass

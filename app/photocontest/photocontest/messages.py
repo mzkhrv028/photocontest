@@ -1,5 +1,6 @@
 import typing as tp
 
+
 if tp.TYPE_CHECKING:
     from app.photocontest.web.context import AppContext
 
@@ -22,12 +23,12 @@ class TextMessage:
     def before_confirme(self, timeout: int) -> str:
         return f"Подтвердите участие в течение {timeout} секунд!"
 
-    def after_confirme(self) -> str:
-        return "Подтверждение окончено. "
+    def after_confirme(self, quantity: int) -> str:
+        return f"Подтверждение окончено. Кол-во участников {quantity}."
 
     def already_started(self) -> str:
         return "Игра уже идёт. Подождите завершения."
-    
+
     def error_notenough(self) -> str:
         return "Недостаточно участников."
 
@@ -53,6 +54,9 @@ class Payload:
     def cancel(self) -> str:
         return "cancel"
 
+    def vote(self) -> str:
+        return "vote"
+
 
 class Snackbar:
     def confirmed(self) -> str:
@@ -64,10 +68,10 @@ class Snackbar:
     def already_confirmed(self) -> str:
         return "Ваше участие уже принято."
 
-    def error_profile(self) -> str:
+    def closed_profile(self) -> str:
         return "Профиль закрыт. "
 
-    def error_photo(self) -> str:
+    def no_photo(self) -> str:
         return "Отсутствует фото профиля. "
 
 

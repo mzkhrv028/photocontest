@@ -6,7 +6,7 @@ from aiohttp.client import ClientSession
 
 if tp.TYPE_CHECKING:
     from app.botpoll.web.app import Application
-    from app.botpoll.vkpoll.models import Update
+    from app.botpoll.vkpoll.models import UpdateObject
 
 
 API_PATH = "https://api.vk.com/method/"
@@ -48,7 +48,7 @@ class VkLongPollAccessor:
                 data["ts"],
             )
 
-    async def poll(self) -> list["Update"]:
+    async def poll(self) -> list["UpdateObject"]:
         params = {
             "act": "a_check",
             "key": self.key,
@@ -62,11 +62,5 @@ class VkLongPollAccessor:
 
             return self.progress_updates(updates=data["updates"])
 
-    def progress_updates(self, updates: dict) -> list["Update"]:
-        objects = []
-
-        for upd in updates:
-            update = self.app.store.factory.create(upd)
-            objects.append(update)
-
-        return objects
+    def progress_updates(self, updates: dict) -> list["UpdateObject"]:
+        return [self.app.store.factory.create(u) for u in updates]

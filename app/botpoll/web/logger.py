@@ -1,7 +1,8 @@
 import logging
-import typing
+import typing as tp
 
-if typing.TYPE_CHECKING:
+
+if tp.TYPE_CHECKING:
     from app.botpoll.web.app import Application
 
 

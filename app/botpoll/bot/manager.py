@@ -1,5 +1,5 @@
+import asyncio
 import typing as tp
-from asyncio import CancelledError
 
 from app.botpoll.bot.poller import Poller
 
@@ -16,7 +16,7 @@ class Bot:
     async def run(self) -> None:
         try:
             await self.start()
-        except CancelledError:
+        except asyncio.CancelledError:
             await self.stop()
 
     async def start(self) -> None:

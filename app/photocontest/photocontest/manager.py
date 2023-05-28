@@ -1,9 +1,10 @@
-import typing
-from asyncio import CancelledError
+import asyncio
+import typing as tp
 
 from app.photocontest.photocontest.worker import Worker
 
-if typing.TYPE_CHECKING:
+
+if tp.TYPE_CHECKING:
     from app.photocontest.web.app import Application
 
 
@@ -15,7 +16,7 @@ class Handler:
     async def run(self) -> None:
         try:
             await self.start()
-        except CancelledError:
+        except asyncio.CancelledError:
             await self.stop()
 
     async def start(self) -> None:

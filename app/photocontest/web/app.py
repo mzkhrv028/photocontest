@@ -6,6 +6,7 @@ from app.photocontest.web.logger import setup_logging
 from app.photocontest.web.config import setup_config
 from app.photocontest.store import setup_store
 
+
 if tp.TYPE_CHECKING:
     from logging import Logger
     from app.photocontest.store.database.database import Database

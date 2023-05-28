@@ -3,37 +3,42 @@ import typing as tp
 
 
 if tp.TYPE_CHECKING:
-    from app.botpoll.vkpoll.models import Update
-
+    from app.botpoll.vkpoll.models import UpdateObject, Message
 
 
 class GameDecorator:
     def check_progress(command: tp.Coroutine) -> tp.Coroutine:
-        async def wrapper(self, update: "Update") -> tp.Coroutine:
-            state_game = await self.app.store.handler.get_state_game(update.object.message.peer_id)
+        async def wrapper(self, message: "Message") -> tp.Coroutine:
+            state_game = await self.app.store.handler.get_state_game(message.peer_id)
+
             if state_game == "progress":
-                update.object.message.text = self.app.context.message.text.already_started()
-                self.app.store.queue_send.put_nowait(update)
+                message.text = self.app.context.message.text.already_started()
+                self.app.store.queue_send.put_nowait(message)
                 return None
-            return await command(self, update)
+
+            return await command(self, message)
 
         return wrapper
 
     def delay(command: tp.Coroutine) -> tp.Coroutine:
-        async def wrapper(self, update: "Update") -> tp.Coroutine:
-            await asyncio.sleep(self.app.config.game.timeout_confirme)
-            return await command(self, update)
+        async def wrapper(self, update_object: "UpdateObject") -> tp.Coroutine:
+            await asyncio.sleep(self.app.config.game.timeout)
+            return await command(self, update_object)
 
         return wrapper
 
-    def check_qty(command: tp.Coroutine) -> tp.Coroutine:
-        async def wrapper(self, update: "Update") -> tp.Coroutine:
-            if len(self.app.store.chats[update.object.message.peer_id]) < 2:
-                update.object.message.text = self.app.context.message.text.error_notenough()
-                update.object.message.keyboard = self.app.context.director.keyboard.make_menu()
-                await self.app.store.handler.update_state_game(update.object.message.peer_id, None)
-                self.app.store.queue_send.put_nowait(update)
+    def check_quantity(command: tp.Coroutine) -> tp.Coroutine:
+        async def wrapper(self, message: "Message") -> tp.Coroutine:
+
+            if len(self.app.store.chats[message.peer_id]) < 2:
+                message.text = self.app.context.message.text.error_notenough()
+                message.keyboard = self.app.context.director.keyboard.make_menu()
+            
+                await self.app.store.handler.update_state_game(message.peer_id, None)
+
+                self.app.store.queue_send.put_nowait(message)
                 return None
-            return await command(self, update)
+
+            return await command(self, message)
 
         return wrapper

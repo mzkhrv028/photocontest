@@ -1,5 +1,4 @@
 import asyncio
-import sys
 
 from app.botpoll.main import run_app as run_botpoll
 from app.photocontest.main import run_app as run_handler

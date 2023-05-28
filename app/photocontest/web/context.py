@@ -4,6 +4,7 @@ from app.photocontest.photocontest.commands import setup_commands
 from app.photocontest.photocontest.keyboards import setup_director
 from app.photocontest.photocontest.messages import setup_messages
 
+
 if tp.TYPE_CHECKING:
     from app.photocontest.web.app import Application
     from app.photocontest.photocontest.keyboards import BaseDirector

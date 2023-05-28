@@ -1,14 +1,14 @@
-from app.botpoll.vkpoll.models import Event, Message, Update, UpdateObject
+from app.botpoll.vkpoll.models import UpdateObject, Message, Event
 
 
 class UpdateFactory:
-    def create(self, data: dict) -> Update:
-        update = Update(type=data["type"], object=UpdateObject())
+    def create(self, data: dict) -> UpdateObject | None:
+        update_object = None
 
-        match update.type:
+        match data["type"]:
             case "message_new":
-                update.object.message = Message(**data["object"]["message"])
+                update_object = Message(**data["object"]["message"])
             case "message_event":
-                update.object.event = Event(**data["object"])       
+                update_object = Event(**data["object"])
 
-        return update
+        return update_object

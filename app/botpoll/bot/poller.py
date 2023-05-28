@@ -1,8 +1,8 @@
-import typing
 import asyncio
+import typing as tp
 
 
-if typing.TYPE_CHECKING:
+if tp.TYPE_CHECKING:
     from app.botpoll.web.app import Application
 
 
@@ -22,8 +22,8 @@ class Poller:
     async def poll(self) -> None:
         while self.is_running:
             updates = await self.app.store.vkpoll.poll()
-            for update in updates:
-                self.app.store.queue_poll.put_nowait(update)
+            for update_object in updates:
+                self.app.store.queue_poll.put_nowait(update_object)
 
     def _done_callback(self, future: asyncio.Future) -> None:
         if future.exception():

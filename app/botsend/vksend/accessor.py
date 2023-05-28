@@ -1,14 +1,16 @@
 import json
 import random
-import typing
+import typing as tp
 
 from aiohttp import TCPConnector
 from aiohttp.client import ClientSession
 
 from app.botpoll.vkpoll.models import Event, Message
 
-if typing.TYPE_CHECKING:
+
+if tp.TYPE_CHECKING:
     from app.botsend.web.app import Application
+
 
 API_PATH = "https://api.vk.com/method/"
 
@@ -33,6 +35,7 @@ class VkSendAccessor:
             "access_token": self.app.config.bot.access_token,
             "group_id": self.app.config.bot.group_id,
             "message": message.text,
+            "attachment": ",".join(message.attachments),
             "random_id": random.randint(1, 2**32),
             "peer_id": message.peer_id,
             "keyboard": json.dumps(message.keyboard),
