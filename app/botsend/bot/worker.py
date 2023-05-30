@@ -23,7 +23,9 @@ class Worker:
 
     async def progress_queue_send(self) -> None:
         while self.is_running:
-            update_object: "UpdateObject" = await self.app.store.queue_send.get()
+            update_object: "UpdateObject" = (
+                await self.app.store.queue_send.get()
+            )
             try:
                 await self.send_update(update_object)
             finally:
@@ -37,4 +39,6 @@ class Worker:
 
     def _done_callback(self, future: asyncio.Future) -> None:
         if future.exception():
-            self.app.logger.exception("SENDER FAILED", exc_info=future.exception)
+            self.app.logger.exception(
+                "SENDER FAILED", exc_info=future.exception
+            )

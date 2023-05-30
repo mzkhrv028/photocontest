@@ -9,12 +9,16 @@ async def run_app() -> None:
     queue_poll = asyncio.Queue()
     queue_send = asyncio.Queue()
 
-    botpoll_task = asyncio.create_task(run_botpoll(queue_poll=queue_poll), name="POLLER")
+    botpoll_task = asyncio.create_task(
+        run_botpoll(queue_poll=queue_poll), name="POLLER"
+    )
     handler_task = asyncio.create_task(
         run_handler(queue_poll=queue_poll, queue_send=queue_send),
         name="HANDLER",
     )
-    botsend_task = asyncio.create_task(run_botsend(queue_send=queue_send), name="SENDER")
+    botsend_task = asyncio.create_task(
+        run_botsend(queue_send=queue_send), name="SENDER"
+    )
 
     await asyncio.gather(
         botpoll_task,

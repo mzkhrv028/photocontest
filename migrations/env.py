@@ -71,7 +71,10 @@ async def run_async_migrations() -> None:
 
     configuration = config.get_section(config.config_ini_section, {})
 
-    if not configuration.get("sqlalchemy.url") or configuration.get("sqlalchemy.url") == "None":
+    if (
+        not configuration.get("sqlalchemy.url")
+        or configuration.get("sqlalchemy.url") == "None"
+    ):
         configuration["sqlalchemy.url"] = os.getenv("DATABASE_URL")
 
     connectable = async_engine_from_config(

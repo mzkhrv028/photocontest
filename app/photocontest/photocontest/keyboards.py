@@ -1,7 +1,8 @@
 import typing as tp
 from dataclasses import asdict
 
-from app.photocontest.store.vkapi.models import Button, Keyboard, UserAccount
+from app.photocontest.store.vkapi.models import Button, Keyboard
+from app.photocontest.photocontest.models import User
 from app.photocontest.photocontest.messages import ButtonLabel, Payload
 
 
@@ -42,7 +43,7 @@ class KeyboardDirector:
 
         return asdict(self.__builder.keyboard)
 
-    def make_vote(self, *user_accounts: list[UserAccount]) -> dict[str, tp.Any]:
+    def make_vote(self, users: list[User]) -> dict[str, tp.Any]:
         self.__builder.reset()
         self.__builder.set_inline(True)
         self.__builder.set_onetime(False)
@@ -50,9 +51,13 @@ class KeyboardDirector:
         buttons = [
             Button(
                 type="callback",
-                label=user_account.first_name,
-                payload={"cmd": self.__payload.vote(), "vote_id": user_account.user_id},
-            ) for user_account in user_accounts
+                label=user.first_name,
+                payload={
+                    "cmd": self.__payload.vote(),
+                    "vote_id": user.user_id,
+                },
+            )
+            for user in users
         ]
 
         self.__builder.add_buttons(buttons=buttons)

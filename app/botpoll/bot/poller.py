@@ -27,4 +27,6 @@ class Poller:
 
     def _done_callback(self, future: asyncio.Future) -> None:
         if future.exception():
-            self.app.logger.exception("POLLING FAILED", exc_info=future.exception)
+            self.app.logger.exception(
+                "POLLING FAILED", exc_info=future.exception
+            )

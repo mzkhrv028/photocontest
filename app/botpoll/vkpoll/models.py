@@ -5,25 +5,24 @@ from dataclasses import dataclass, field
 
 @dataclass
 class Message:
-    date: int
-    from_id: int
-    id: int
-    out: int
-    attachments: list
-    conversation_message_id: int
-    fwd_messages: list
-    important: bool
-    is_hidden: bool
     peer_id: int
-    random_id: int
     text: str
     keyboard: str = ""
     payload: str = "{}"
+    attachments: list = field(default_factory=list)
+    date: int | None = None
+    from_id: int | None = None
+    id: int | None = None
+    out: int | None = None
+    conversation_message_id: int | None = None
+    fwd_messages: list | None = None
+    important: bool | None = None
+    is_hidden: bool | None = None
+    random_id: int | None = None
 
     def __post_init__(self):
         payload = json.loads(self.payload)
         self.payload = payload.get("cmd", "")
-        self.text = self.text.lower()
 
 
 @dataclass

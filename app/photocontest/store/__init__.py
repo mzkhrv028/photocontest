@@ -21,9 +21,11 @@ class Store:
         self.vkapi = VkAccessor(app)
         self.queue_poll = queue_poll
         self.queue_send = queue_send
-        self.games = {}
+        self.chats = {}
 
 
-def setup_store(app: "Application", queue_poll: asyncio.Queue, queue_send: asyncio.Queue) -> None:
+def setup_store(
+    app: "Application", queue_poll: asyncio.Queue, queue_send: asyncio.Queue
+) -> None:
     app.database = Database(app)
     app.store = Store(app, queue_poll, queue_send)

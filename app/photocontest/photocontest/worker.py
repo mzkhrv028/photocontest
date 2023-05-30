@@ -22,7 +22,7 @@ class Worker:
 
     async def stop(self) -> None:
         self.is_running = False
-        await self.app.store.handler.cancel_all_game() #TODO: Убрать?
+        await self.app.store.handler.cancel_all_game()  # TODO: Убрать?
 
     async def progress_queue_poll(self) -> None:
         try:
@@ -33,7 +33,7 @@ class Worker:
                     await self.progress_update(update_object)
                 finally:
                     self.app.store.queue_poll.task_done()
-                    
+
         except asyncio.CancelledError:
             pass
 
@@ -53,4 +53,6 @@ class Worker:
 
     def _done_callback(self, future: asyncio.Future) -> None:
         if future.exception():
-            self.app.logger.exception("HANDLER FAILED", exc_info=future.exception)
+            self.app.logger.exception(
+                "HANDLER FAILED", exc_info=future.exception
+            )
