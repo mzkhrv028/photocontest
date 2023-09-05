@@ -1,0 +1,11 @@
+import logging
+import typing as tp
+
+
+if tp.TYPE_CHECKING:
+    from app.botsend.web.app import Application
+
+
+def setup_logging(app: "Application") -> None:
+    logging.basicConfig(level=logging.INFO)
+    app.logger = logging.getLogger("BOTSEND")

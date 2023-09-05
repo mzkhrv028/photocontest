@@ -1,1 +1,1 @@
-# photocontest
+# Photo Contest

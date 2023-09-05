@@ -1,0 +1,27 @@
+import typing as tp
+from dataclasses import dataclass
+
+from app.utils import parse
+
+
+if tp.TYPE_CHECKING:
+    from app.botpoll.web.app import Application
+
+
+@dataclass
+class BotConfig:
+    group_id: str
+    access_token: str
+
+
+@dataclass
+class Config:
+    bot: BotConfig = None
+
+
+def setup_config(app: "Application") -> None:
+    raw_config = parse.parse_config()
+
+    app.config = Config(
+        bot=BotConfig(**raw_config["bot"]),
+    )
