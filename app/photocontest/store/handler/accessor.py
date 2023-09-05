@@ -1,4 +1,3 @@
-from re import U
 import typing as tp
 
 from sqlalchemy import select

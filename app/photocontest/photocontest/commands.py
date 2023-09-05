@@ -94,9 +94,15 @@ class StartCommand(BaseCommand):
 
                 message = Message(
                     peer_id=self.chat_id,
-                    text=f"Поздравляем, {winner.first_name} {winner.last_name} выиграл!",
+                    text=f"Поздравляем, {winner.first_name} {winner.last_name} проходит в следующий раунд!",
                 )
                 self.app.store.queue_send.put_nowait(message)
+
+        message = Message(
+            peer_id=self.chat_id,
+            text=f"Итого, {winner.first_name} {winner.last_name} выиграл!",
+        )
+        self.app.store.queue_send.put_nowait(message)
 
     async def _play_round(self, *users: list["User"]) -> None:
         message = Message(
