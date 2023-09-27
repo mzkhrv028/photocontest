@@ -1,7 +1,7 @@
-import typing as tp
 import pathlib
-import yaml
+import typing as tp
 
+import yaml
 
 BASE_DIR = pathlib.Path(__file__).parent.parent.parent
 config_path = BASE_DIR / "config" / "config.yaml"

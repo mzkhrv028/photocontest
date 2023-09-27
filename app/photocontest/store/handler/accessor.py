@@ -3,9 +3,8 @@ import typing as tp
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from app.photocontest.photocontest.models import Game, GameSession, User
+from app.photocontest.photocontest.models import Game, User
 from app.photocontest.store.vkapi.models import UserAccount
-
 
 if tp.TYPE_CHECKING:
     from app.photocontest.web.app import Application
@@ -32,11 +31,7 @@ class HandlerAccessor:
 
     async def get_or_register_game(self, chat_id: int) -> Game:
         async with self.app.database.sessionmaker() as session:
-            stmt = (
-                select(Game)
-                .filter_by(chat_id=chat_id)
-                .options(selectinload(Game.users))
-            )
+            stmt = select(Game).filter_by(chat_id=chat_id).options(selectinload(Game.users))
             game = (await session.execute(stmt)).scalars().first()
 
             if game is None:
@@ -50,24 +45,17 @@ class HandlerAccessor:
     async def cancel_all_game(self) -> None:
         async with self.app.database.sessionmaker.begin() as session:
             stmt = select(Game).filter_by(state="progress")
-            games: list[Game] = (
-                (await session.execute(stmt)).scalars().unique().all()
-            )
+            games: list[Game] = (await session.execute(stmt)).scalars().unique().all()
 
             for game in games:
                 game.state = None
 
             session.add_all(games)
 
-    async def register_users(
-        self, accounts: dict[int, UserAccount], chat_id: int
-    ) -> list[User]:
+    async def register_users(self, accounts: dict[int, UserAccount], chat_id: int) -> list[User]:
         async with self.app.database.sessionmaker.begin() as session:
             game = await self.get_or_register_game(chat_id)
-            users = {
-                user.user_id: user
-                for user in (await self._get_users_from_accounts(accounts))
-            }
+            users = {user.user_id: user for user in (await self._get_users_from_accounts(accounts))}
 
             for user_id, account in accounts.items():
                 if user_id in users:
@@ -77,9 +65,7 @@ class HandlerAccessor:
                     user.last_name = account.last_name
                     user.photo_id = account.photo_id
 
-                    if not any(
-                        filter(lambda u: u.user_id == user.user_id, game.users)
-                    ):
+                    if not any(filter(lambda u: u.user_id == user.user_id, game.users)):
                         user.games.append(game)
                 else:
                     user = User(
@@ -96,14 +82,8 @@ class HandlerAccessor:
 
         return users.values()
 
-    async def _get_users_from_accounts(
-        self, user_accounts: dict[int, UserAccount]
-    ) -> list[User] | None:
+    async def _get_users_from_accounts(self, user_accounts: dict[int, UserAccount]) -> list[User] | None:
         async with self.app.database.sessionmaker() as session:
-            stmt = (
-                select(User)
-                .where(User.user_id.in_(user_accounts))
-                .options(selectinload(User.games))
-            )
+            stmt = select(User).where(User.user_id.in_(user_accounts)).options(selectinload(User.games))
             users = (await session.execute(stmt)).scalars().all()
         return users

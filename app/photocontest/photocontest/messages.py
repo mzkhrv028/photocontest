@@ -1,6 +1,5 @@
 import typing as tp
 
-
 if tp.TYPE_CHECKING:
     from app.photocontest.web.context import AppContext
 

@@ -1,8 +1,7 @@
-import typing as tp
 import asyncio
+import typing as tp
 
-from app.botpoll.vkpoll.models import UpdateObject, Message, Event
-
+from app.botpoll.vkpoll.models import Event, Message, UpdateObject
 
 if tp.TYPE_CHECKING:
     from app.photocontest.web.app import Application
@@ -53,6 +52,4 @@ class Worker:
 
     def _done_callback(self, future: asyncio.Future) -> None:
         if future.exception():
-            self.app.logger.exception(
-                "HANDLER FAILED", exc_info=future.exception
-            )
+            self.app.logger.exception("HANDLER FAILED", exc_info=future.exception)

@@ -1,15 +1,14 @@
 import asyncio
 import typing as tp
 
-
 if tp.TYPE_CHECKING:
     from app.botpoll.web.app import Application
 
 
 class Store:
     def __init__(self, app: "Application", queue_poll: asyncio.Queue) -> None:
-        from app.botpoll.vkpoll.accessor import VkLongPollAccessor
         from app.botpoll.bot.factories import UpdateFactory
+        from app.botpoll.vkpoll.accessor import VkLongPollAccessor
 
         self.factory = UpdateFactory()
         self.vkpoll = VkLongPollAccessor(app)

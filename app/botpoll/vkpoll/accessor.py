@@ -3,10 +3,9 @@ import typing as tp
 from aiohttp import TCPConnector
 from aiohttp.client import ClientSession
 
-
 if tp.TYPE_CHECKING:
-    from app.botpoll.web.app import Application
     from app.botpoll.vkpoll.models import UpdateObject
+    from app.botpoll.web.app import Application
 
 
 API_PATH = "https://api.vk.com/method/"

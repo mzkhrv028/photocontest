@@ -1,14 +1,9 @@
 import typing as tp
 
-from sqlalchemy.ext.asyncio import (
-    AsyncEngine,
-    create_async_engine,
-    async_sessionmaker,
-)
+from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
 from app.photocontest.store.database.sqlalchemy_base import Base
-
 
 if tp.TYPE_CHECKING:
     from app.photocontest.web.app import Application
@@ -23,12 +18,8 @@ class Database:
 
     async def connect(self, *_: list, **__: dict) -> None:
         self._db = Base
-        self._engine = create_async_engine(
-            self.app.config.database.url, echo=True
-        )
-        self.sessionmaker = async_sessionmaker(
-            self._engine, expire_on_commit=False
-        )
+        self._engine = create_async_engine(self.app.config.database.url, echo=True)
+        self.sessionmaker = async_sessionmaker(self._engine, expire_on_commit=False)
 
     async def disconnect(self, *_: list, **__: dict) -> None:
         if self._engine:

@@ -3,7 +3,6 @@ import typing as tp
 
 from app.botsend.bot.worker import Worker
 
-
 if tp.TYPE_CHECKING:
     from app.botsend.web.app import Application
 

@@ -1,7 +1,6 @@
 import asyncio
 import typing as tp
 
-
 if tp.TYPE_CHECKING:
     from app.botsend.web.app import Application
 
