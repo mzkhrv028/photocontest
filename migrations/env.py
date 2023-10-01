@@ -1,15 +1,14 @@
-import os
 import asyncio
+import os
 from logging.config import fileConfig
 
+from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from alembic import context
-
+from app.photocontest.photocontest.models import Game, GameSession, User
 from app.photocontest.store.database.sqlalchemy_base import Base
-from app.photocontest.photocontest.models import User, Game, GameSession
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -71,10 +70,7 @@ async def run_async_migrations() -> None:
 
     configuration = config.get_section(config.config_ini_section, {})
 
-    if (
-        not configuration.get("sqlalchemy.url")
-        or configuration.get("sqlalchemy.url") == "None"
-    ):
+    if not configuration.get("sqlalchemy.url") or configuration.get("sqlalchemy.url") == "None":
         configuration["sqlalchemy.url"] = os.getenv("DATABASE_URL")
 
     connectable = async_engine_from_config(
