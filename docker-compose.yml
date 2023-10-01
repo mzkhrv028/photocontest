@@ -11,14 +11,19 @@ services:
       - internal
     depends_on:
       - postgres
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${APP_NAME:?err}_db
+      DATABASE_URL: ${DATABASE_URL:?err}
   postgres:
     container_name: postgres_${APP_NAME:?err}
     image: postgres:${POSTGRES_VERSION:-15}-alpine
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_HOST: ${POSTGRES_HOST:-localhost}
-      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
       POSTGRES_DB: ${APP_NAME:?err}_db
     volumes:
       - postgres_data:/var/lib/postgresql/data

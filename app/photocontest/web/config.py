@@ -12,12 +12,11 @@ class DatabaseConfig:
     user: str
     password: str
     host: str
-    port: str
+    port: int
     database: str
 
     @property
     def url(self) -> str:
-        print(self.port, self.host)
         return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
 
 
