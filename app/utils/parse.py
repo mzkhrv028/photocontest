@@ -18,4 +18,9 @@ def parse_config(config_path: str = config_path) -> dict[str, tp.Any]:
     config["database"]["port"] = os.environ.get("POSTGRES_PORT", config["database"]["port"])
     config["database"]["database"] = os.environ.get("POSTGRES_DB", config["database"]["database"])
 
+    config["bot"]["access_token"] = os.environ.get("ACCESS_TOKEN", config["bot"]["access_token"])
+    config["bot"]["group_id"] = os.environ.get("GROUP_ID", config["bot"]["group_id"])
+
+    config["game"]["timeout"] = os.environ.get("TIMEOUT", config["bot"]["timeout"])
+
     return config

@@ -18,6 +18,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: ${APP_NAME:?err}_db
       DATABASE_URL: ${DATABASE_URL:?err}
+      GROUP_ID: ${GROUP_ID}
+      ACCESS_TOKEN: ${ACCESS_TOKEN}
   postgres:
     container_name: postgres_${APP_NAME:?err}
     image: postgres:${POSTGRES_VERSION:-15}-alpine

@@ -51,7 +51,8 @@ class StartCommand(BaseCommand):
         self.commands_tasks.append(asyncio.create_task(self._progress_confirmed_users()))
 
     @GameDecorator.delay
-    async def _progress_confirmed_users(self) -> None:
+    @GameDecorator.check_quantity
+    async def _progress_confirmed_users(self, message: "Message") -> None:
         message = Message(
             peer_id=self.chat_id,
             text=self.app.context.message.text.after_confirme(len(self.app.store.chats[self.chat_id])),
