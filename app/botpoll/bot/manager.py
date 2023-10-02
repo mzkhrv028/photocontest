@@ -3,7 +3,6 @@ import typing as tp
 
 from app.botpoll.bot.poller import Poller
 
-
 if tp.TYPE_CHECKING:
     from app.botpoll.web.app import Application
 

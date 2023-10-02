@@ -1,18 +1,17 @@
 import abc
 import asyncio
-import typing as tp
 import collections
+import typing as tp
 
-from app.botpoll.vkpoll.models import UpdateObject, Message, Event
+from app.botpoll.vkpoll.models import Event, Message, UpdateObject
 from app.botsend.vksend.models import Snackbar
 from app.photocontest.photocontest.decorators import GameDecorator
 
-
 if tp.TYPE_CHECKING:
+    from app.photocontest.photocontest.models import User
+    from app.photocontest.store.vkapi.models import UserAccount
     from app.photocontest.web.app import Application
     from app.photocontest.web.context import AppContext
-    from app.photocontest.store.vkapi.models import UserAccount
-    from app.photocontest.photocontest.models import User
 
 
 class BaseCommand(GameDecorator, abc.ABC):
@@ -40,32 +39,23 @@ class MenuCommand(BaseCommand):
 class StartCommand(BaseCommand):
     @GameDecorator.check_progress
     async def execute(self, message: "Message") -> None:
-        message.text = self.app.context.message.text.before_confirme(
-            self.app.config.game.timeout
-        )
+        message.text = self.app.context.message.text.before_confirme(self.app.config.game.timeout)
         message.keyboard = self.app.context.director.keyboard.make_confirme()
         self.app.store.queue_send.put_nowait(message)
 
-        game = await self.app.store.handler.get_or_register_game(
-            message.peer_id
-        )
-        await self.app.store.handler.update_state_game(
-            game.chat_id, "progress"
-        )
+        game = await self.app.store.handler.get_or_register_game(message.peer_id)
+        await self.app.store.handler.update_state_game(game.chat_id, "progress")
 
         self.app.store.chats[game.chat_id] = {}
 
-        self.commands_tasks.append(
-            asyncio.create_task(self._progress_confirmed_users())
-        )
+        self.commands_tasks.append(asyncio.create_task(self._progress_confirmed_users()))
 
     @GameDecorator.delay
-    async def _progress_confirmed_users(self) -> None:
+    @GameDecorator.check_quantity
+    async def _progress_confirmed_users(self, message: "Message") -> None:
         message = Message(
             peer_id=self.chat_id,
-            text=self.app.context.message.text.after_confirme(
-                len(self.app.store.chats[self.chat_id])
-            ),
+            text=self.app.context.message.text.after_confirme(len(self.app.store.chats[self.chat_id])),
             keyboard=self.app.context.director.keyboard.make_empty(),
         )
         self.app.store.queue_send.put_nowait(message)
@@ -87,9 +77,7 @@ class StartCommand(BaseCommand):
                 self.app.store.chats[self.chat_id]["voters"] = []
                 self.app.store.chats[self.chat_id]["voting"] = []
 
-                winner = await self._play_round(
-                    users.popleft(), users.popleft()
-                )
+                winner = await self._play_round(users.popleft(), users.popleft())
                 users.append(winner)
 
                 message = Message(
@@ -115,23 +103,17 @@ class StartCommand(BaseCommand):
 
         await asyncio.sleep(15.0)
 
-        counter = collections.Counter(
-            self.app.store.chats[self.chat_id]["voting"]
-        )
+        counter = collections.Counter(self.app.store.chats[self.chat_id]["voting"])
 
-        return self.app.store.chats[self.chat_id][
-            max(counter, key=counter.get)
-        ]
+        return self.app.store.chats[self.chat_id][max(counter, key=counter.get)]
 
 
 class VoteCommand(BaseCommand):
     async def execute(self, event: "Event") -> None:
         chat = self.app.store.chats[event.peer_id]
 
-        if not event.user_id in chat:
-            event.event_data = Snackbar(
-                text="Вы не участвуете в игре."
-            ).dumps()
+        if event.user_id not in chat:
+            event.event_data = Snackbar(text="Вы не участвуете в игре.").dumps()
             self.app.store.queue_send.put_nowait(event)
             return None
 
@@ -149,9 +131,7 @@ class VoteCommand(BaseCommand):
 
 class ConfirmeCommand(BaseCommand):
     async def execute(self, event: "Event") -> None:
-        user_account = await self.app.store.vkapi.get_user_account(
-            event.user_id
-        )
+        user_account = await self.app.store.vkapi.get_user_account(event.user_id)
 
         if user_account.photo_id:
             snackbar_text = self._success_snackbar(event, user_account)
@@ -161,9 +141,7 @@ class ConfirmeCommand(BaseCommand):
         event.event_data = Snackbar(text=snackbar_text).dumps()
         self.app.store.queue_send.put_nowait(event)
 
-    def _success_snackbar(
-        self, event: "Event", user_account: "UserAccount"
-    ) -> str:
+    def _success_snackbar(self, event: "Event", user_account: "UserAccount") -> str:
         if event.user_id in self.app.store.chats[self.chat_id]:
             return self.app.context.message.snackbar.already_confirmed()
 
@@ -193,7 +171,7 @@ class CancelCommand(BaseCommand):
         self.app.store.queue_send.put_nowait(event)
 
 
-def setup_commands(app: "Application", context: "AppContext"):
+def setup_commands(app: "Application", context: "AppContext") -> None:
     commands = {}
 
     commands["/"] = MenuCommand(app)

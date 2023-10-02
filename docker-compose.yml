@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  app:
+    container_name: app_${APP_NAME:?err}
+    build:
+      context: .
+    volumes:
+      - ./:/usr/src/app
+    networks:
+      - internal
+    depends_on:
+      - postgres
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${APP_NAME:?err}_db
+      DATABASE_URL: ${DATABASE_URL:?err}
+      GROUP_ID: ${GROUP_ID}
+      ACCESS_TOKEN: ${ACCESS_TOKEN}
+  postgres:
+    container_name: postgres_${APP_NAME:?err}
+    image: postgres:${POSTGRES_VERSION:-15}-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${APP_NAME:?err}_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

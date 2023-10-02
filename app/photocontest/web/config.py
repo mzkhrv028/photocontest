@@ -9,11 +9,11 @@ if typing.TYPE_CHECKING:
 
 @dataclass
 class DatabaseConfig:
-    user: str = "postgres"
-    password: str = "postgres"
-    host: str = "localhost"
-    port: int = 5432
-    database: str = "project"
+    user: str
+    password: str
+    host: str
+    port: int
+    database: str
 
     @property
     def url(self) -> str:

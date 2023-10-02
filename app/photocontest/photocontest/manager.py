@@ -3,7 +3,6 @@ import typing as tp
 
 from app.photocontest.photocontest.worker import Worker
 
-
 if tp.TYPE_CHECKING:
     from app.photocontest.web.app import Application
 

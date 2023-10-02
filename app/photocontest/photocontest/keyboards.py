@@ -1,10 +1,9 @@
 import typing as tp
 from dataclasses import asdict
 
-from app.photocontest.store.vkapi.models import Button, Keyboard
-from app.photocontest.photocontest.models import User
 from app.photocontest.photocontest.messages import ButtonLabel, Payload
-
+from app.photocontest.photocontest.models import User
+from app.photocontest.store.vkapi.models import Button, Keyboard
 
 if tp.TYPE_CHECKING:
     from app.photocontest.web.context import AppContext

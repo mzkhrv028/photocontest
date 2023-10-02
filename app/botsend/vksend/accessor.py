@@ -7,7 +7,6 @@ from aiohttp.client import ClientSession
 
 from app.botpoll.vkpoll.models import Event, Message
 
-
 if tp.TYPE_CHECKING:
     from app.botsend.web.app import Application
 

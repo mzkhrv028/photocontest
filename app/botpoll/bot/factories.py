@@ -1,4 +1,4 @@
-from app.botpoll.vkpoll.models import UpdateObject, Message, Event
+from app.botpoll.vkpoll.models import Event, Message, UpdateObject
 
 
 class UpdateFactory:

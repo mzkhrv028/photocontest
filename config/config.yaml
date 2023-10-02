@@ -1,0 +1,11 @@
+database:
+  user: postgres
+  password: postgres
+  host: localhost
+  port: 5432
+  database: photocontest_db
+bot:
+  access_token:
+  group_id:
+game:
+  timeout: 15

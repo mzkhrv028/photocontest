@@ -3,7 +3,6 @@ from dataclasses import dataclass
 
 from app.utils import parse
 
-
 if tp.TYPE_CHECKING:
     from app.botpoll.web.app import Application
 

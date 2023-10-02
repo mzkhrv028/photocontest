@@ -4,7 +4,6 @@ from aiohttp import ClientSession, TCPConnector
 
 from app.photocontest.store.vkapi.models import UserAccount
 
-
 if tp.TYPE_CHECKING:
     from app.photocontest.web.app import Application
 
