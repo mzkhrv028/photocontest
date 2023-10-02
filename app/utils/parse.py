@@ -10,12 +10,12 @@ config_path = BASE_DIR / "config" / "config.yaml"
 
 def parse_config(config_path: str = config_path) -> dict[str, tp.Any]:
     with open(config_path, "r") as f:
-        raw_config = yaml.safe_load(f)
+        config = yaml.safe_load(f)
 
-    raw_config["database"]["user"] = os.environ.get("POSTGRES_USER")
-    raw_config["database"]["password"] = os.environ.get("POSTGRES_PASSWORD")
-    raw_config["database"]["host"] = os.environ.get("POSTGRES_HOST")
-    raw_config["database"]["port"] = os.environ.get("POSTGRES_PORT")
-    raw_config["database"]["database"] = os.environ.get("POSTGRES_DB")
+    config["database"]["user"] = os.environ.get("POSTGRES_USER", config["database"]["user"])
+    config["database"]["password"] = os.environ.get("POSTGRES_PASSWORD", config["database"]["password"])
+    config["database"]["host"] = os.environ.get("POSTGRES_HOST", config["database"]["host"])
+    config["database"]["port"] = os.environ.get("POSTGRES_PORT", config["database"]["port"])
+    config["database"]["database"] = os.environ.get("POSTGRES_DB", config["database"]["database"])
 
-    return raw_config
+    return config
